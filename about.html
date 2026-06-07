@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>О бренде — Eto Gioielli</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <header class="header header--solid" id="header">
+    <div class="container">
+      <a href="index.html" class="header__logo">
+        <img src="assets/logo.svg" alt="Eto Gioielli" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+        <span style="display:none">ETO GIOIELLI</span>
+      </a>
+      <nav class="nav">
+        <a href="catalog.html" data-i18n="nav_catalog">Каталог</a>
+        <a href="about.html" data-i18n="nav_about">О бренде</a>
+        <a href="index.html#contact" data-i18n="nav_contact">Контакт</a>
+        <div class="lang-switcher">
+          <button class="lang-btn" data-lang="ru">RU</button>
+          <button class="lang-btn" data-lang="en">EN</button>
+        </div>
+      </nav>
+      <button class="burger" id="burger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <nav class="mobile-nav" id="mobileNav">
+      <a href="catalog.html" data-i18n="nav_catalog">Каталог</a>
+      <div class="lang-switcher">
+        <button class="lang-btn" data-lang="ru">RU</button>
+        <button class="lang-btn" data-lang="en">EN</button>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <section class="about-hero">
+      <div class="container">
+        <div class="about-content">
+          <h1 data-i18n="about_page_title">О бренде</h1>
+          <p>Eto Gioielli — ювелирный бренд, созданный с верой в то, что красота не должна стоить природе ничего. Мы создаём украшения из лабораторных бриллиантов — камней, идентичных природным по химическому составу, оптическим и физическим свойствам.</p>
+          <p>Каждое украшение проходит строгий контроль качества и сопровождается сертификатом. Мы работаем с лучшими мастерами и используем только драгоценные металлы высшей пробы: белое и жёлтое золото 18K, платину 950.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="why-lab">
+      <div class="container">
+        <h2 data-i18n="about_lab_title">Почему лабораторные бриллианты?</h2>
+        <div class="why-grid">
+          <div class="why-item">
+            <h3>🌿 Экология</h3>
+            <p>Добыча природных бриллиантов наносит серьёзный ущерб экосистемам. Лабораторные бриллианты создаются с минимальным воздействием на природу.</p>
+          </div>
+          <div class="why-item">
+            <h3>💎 Идентичное качество</h3>
+            <p>Лабораторные бриллианты — не имитация. Это настоящие бриллианты, выращенные в контролируемых условиях. Они имеют те же физические и оптические свойства, что и природные.</p>
+          </div>
+          <div class="why-item">
+            <h3>✦ Честная цена</h3>
+            <p>Отсутствие посредников в цепочке добычи позволяет предложить украшения премиального качества по справедливой цене.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="contact-block">
+      <div class="container">
+        <h2 data-i18n="contact_title">Связаться с нами</h2>
+        <div class="contact-buttons" id="contactButtons"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__inner">
+        <span class="footer__brand">ETO GIOIELLI</span>
+        <span class="footer__rights" data-i18n="footer_rights">© 2024 Eto Gioielli.</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/config.js"></script>
+  <script src="js/i18n.js"></script>
+  <script>
+    document.getElementById('burger').addEventListener('click', () =>
+      document.getElementById('mobileNav').classList.toggle('open'));
+    document.getElementById('contactButtons').innerHTML = `
+      <a href="https://wa.me/${CONFIG.contact.whatsapp.replace(/\D/g,'')}" class="btn btn--whatsapp" target="_blank" data-i18n="btn_whatsapp">WhatsApp</a>
+      <a href="https://t.me/${CONFIG.contact.telegram.replace('@','')}" class="btn btn--telegram" target="_blank" data-i18n="btn_telegram">Telegram</a>
+    `;
+    applyTranslations(getLang());
+  </script>
+</body>
+</html>

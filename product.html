@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Товар — Eto Gioielli</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <header class="header header--solid" id="header">
+    <div class="container">
+      <a href="index.html" class="header__logo">
+        <img src="assets/logo.svg" alt="Eto Gioielli" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+        <span style="display:none">ETO GIOIELLI</span>
+      </a>
+      <nav class="nav">
+        <a href="catalog.html" data-i18n="nav_catalog">Каталог</a>
+        <a href="about.html" data-i18n="nav_about">О бренде</a>
+        <a href="index.html#contact" data-i18n="nav_contact">Контакт</a>
+        <div class="lang-switcher">
+          <button class="lang-btn" data-lang="ru">RU</button>
+          <button class="lang-btn" data-lang="en">EN</button>
+        </div>
+      </nav>
+      <button class="burger" id="burger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <nav class="mobile-nav" id="mobileNav">
+      <a href="catalog.html" data-i18n="nav_catalog">Каталог</a>
+      <a href="about.html" data-i18n="nav_about">О бренде</a>
+      <div class="lang-switcher">
+        <button class="lang-btn" data-lang="ru">RU</button>
+        <button class="lang-btn" data-lang="en">EN</button>
+      </div>
+    </nav>
+  </header>
+
+  <main id="productContent">
+    <div class="container">
+      <div class="product-layout">
+
+        <div class="gallery">
+          <div class="gallery__main">
+            <img id="galleryMain" src="assets/placeholder.svg" alt="">
+          </div>
+          <div class="gallery__thumbs" id="galleryThumbs"></div>
+        </div>
+
+        <div class="product-info">
+          <p class="product-article" id="productArticle"></p>
+          <h1 id="productName"></h1>
+          <p class="product-price" id="productPrice"></p>
+          <table class="specs-table" id="specsTable"></table>
+          <p class="product-description" id="productDescription"></p>
+          <div class="product-actions" id="productActions"></div>
+        </div>
+      </div>
+    </div>
+
+    <section class="similar" id="similarSection">
+      <div class="container">
+        <div class="section-title">
+          <h2 data-i18n="similar_title">Похожие украшения</h2>
+        </div>
+        <div class="products-grid" id="similarGrid"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__inner">
+        <span class="footer__brand">ETO GIOIELLI</span>
+        <span class="footer__rights" data-i18n="footer_rights">© 2024 Eto Gioielli.</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/config.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="data/products.js"></script>
+  <script src="js/product.js"></script>
+  <script>
+    document.getElementById('burger').addEventListener('click', () =>
+      document.getElementById('mobileNav').classList.toggle('open'));
+  </script>
+</body>
+</html>
