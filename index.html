@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Eto Gioielli — Украшения из лабораторных бриллиантов</title>
+  <title>ÉTO GIOIELLI — Украшения из лабораторных бриллиантов</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -12,13 +12,14 @@
   <header class="header header--transparent" id="header">
     <div class="container">
       <a href="index.html" class="header__logo">
-        <img src="assets/logo.svg" alt="Eto Gioielli" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
-        <span style="display:none">ETO GIOIELLI</span>
+        <img src="assets/logo.svg" alt="ÉTO GIOIELLI" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+        <span style="display:none">ÉTO GIOIELLI</span>
       </a>
       <nav class="nav">
-        <a href="catalog.html" data-i18n="nav_catalog">Каталог</a>
+        <a href="index.html" data-i18n="nav_home">Главная</a>
         <a href="about.html" data-i18n="nav_about">О бренде</a>
-        <a href="#contact" data-i18n="nav_contact">Контакт</a>
+        <a href="catalog.html" data-i18n="nav_catalog">Каталог</a>
+        <a href="contact.html" data-i18n="nav_contacts">Контакты</a>
         <div class="lang-switcher">
           <button class="lang-btn" data-lang="ru">RU</button>
           <button class="lang-btn" data-lang="en">EN</button>
@@ -29,9 +30,10 @@
       </button>
     </div>
     <nav class="mobile-nav" id="mobileNav">
-      <a href="catalog.html" data-i18n="nav_catalog">Каталог</a>
+      <a href="index.html" data-i18n="nav_home">Главная</a>
       <a href="about.html" data-i18n="nav_about">О бренде</a>
-      <a href="#contact" data-i18n="nav_contact">Контакт</a>
+      <a href="catalog.html" data-i18n="nav_catalog">Каталог</a>
+      <a href="contact.html" data-i18n="nav_contacts">Контакты</a>
       <div class="lang-switcher">
         <button class="lang-btn" data-lang="ru">RU</button>
         <button class="lang-btn" data-lang="en">EN</button>
@@ -42,11 +44,16 @@
   <!-- Hero -->
   <section class="hero">
     <div class="container">
-      <div class="hero__content">
-        <p class="hero__tagline">Eto Gioielli</p>
-        <h1 data-i18n="hero_tagline">Рождённые в лаборатории. Созданные для вечности.</h1>
-        <div class="hero__buttons">
-          <a href="catalog.html" class="btn btn--primary" data-i18n="hero_btn">Смотреть каталог</a>
+      <div class="hero__split">
+        <div class="hero__content">
+          <p class="hero__tagline">ÉTO GIOIELLI</p>
+          <h1 data-i18n="hero_tagline">Роскошь, рождённая прогрессом</h1>
+          <div class="hero__buttons">
+            <a href="catalog.html" class="btn btn--primary" data-i18n="hero_btn">Смотреть каталог</a>
+          </div>
+        </div>
+        <div class="hero__image">
+          <img src="assets/hero-photo.jpg" alt="ÉTO GIOIELLI">
         </div>
       </div>
     </div>
@@ -56,24 +63,23 @@
   <section class="section">
     <div class="container">
       <div class="section-title">
-        <h2 data-i18n="about_title">Eto Gioielli</h2>
-        <p data-i18n="about_text">Украшения из лабораторных бриллиантов — такие же настоящие, но без экологического вреда и по справедливой цене.</p>
+        <h2 data-i18n="about_title">ÉTO GIOIELLI</h2>
       </div>
       <div class="features">
         <div class="feature">
-          <div class="feature__icon">🌿</div>
-          <h3 data-i18n="feat1_title">Экология</h3>
-          <p data-i18n="feat1_text">Нулевой вред природе</p>
+          <div class="feature__icon">E</div>
+          <h3 data-i18n="feat1_title">E — Eleganza</h3>
+          <p data-i18n="feat1_text">Элегантность в каждой линии, форме и камне</p>
         </div>
         <div class="feature">
-          <div class="feature__icon">💎</div>
-          <h3 data-i18n="feat2_title">Качество</h3>
-          <p data-i18n="feat2_text">Сертифицированные камни</p>
+          <div class="feature__icon">T</div>
+          <h3 data-i18n="feat2_title">T — Tradizione</h3>
+          <p data-i18n="feat2_text">Вековое мастерство итальянских ювелиров с современными технологиями</p>
         </div>
         <div class="feature">
-          <div class="feature__icon">✦</div>
-          <h3 data-i18n="feat3_title">Цена</h3>
-          <p data-i18n="feat3_text">Честная стоимость</p>
+          <div class="feature__icon">O</div>
+          <h3 data-i18n="feat3_title">O — Originalità</h3>
+          <p data-i18n="feat3_text">Каждая деталь создана быть неповторимой</p>
         </div>
       </div>
     </div>
@@ -104,12 +110,12 @@
   <footer class="footer">
     <div class="container">
       <div class="footer__inner">
-        <span class="footer__brand">ETO GIOIELLI</span>
+        <span class="footer__brand">ÉTO GIOIELLI</span>
         <div class="footer__links">
           <a href="catalog.html" data-i18n="nav_catalog">Каталог</a>
           <a href="about.html" data-i18n="nav_about">О бренде</a>
         </div>
-        <span class="footer__rights" data-i18n="footer_rights">© 2024 Eto Gioielli. Все права защищены.</span>
+        <span class="footer__rights" data-i18n="footer_rights">© 2024 ÉTO GIOIELLI. Все права защищены.</span>
       </div>
     </div>
   </footer>
@@ -131,7 +137,7 @@
     burger.addEventListener('click', () => mobileNav.classList.toggle('open'));
 
     // Featured products
-    function formatPrice(p) { return p.toLocaleString('ru-RU') + ' ₽'; }
+    function formatPrice(p) { return p.toLocaleString('ru-RU') + ' у.е.'; }
     function renderCard(product) {
       return `<a href="product.html?id=${product.id}" class="card">
         <div class="card__img"><img src="${product.images[0]}" alt="${product.name[getLang()]}" loading="lazy"></div>
@@ -144,6 +150,7 @@
 
     // Contact buttons
     document.getElementById('contactButtons').innerHTML = `
+      <p class="contact-info">${CONFIG.contact.city} &nbsp;·&nbsp; <a href="tel:${CONFIG.contact.phone.replace(/\s/g,'')}">${CONFIG.contact.phone}</a></p>
       <a href="https://wa.me/${CONFIG.contact.whatsapp.replace(/\D/g,'')}" class="btn btn--whatsapp" target="_blank" data-i18n="btn_whatsapp">WhatsApp</a>
       <a href="https://t.me/${CONFIG.contact.telegram.replace('@','')}" class="btn btn--telegram" target="_blank" data-i18n="btn_telegram">Telegram</a>
     `;
