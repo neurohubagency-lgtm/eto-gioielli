@@ -50,9 +50,9 @@
     const display = document.getElementById('priceValue');
     slider.max = maxPriceVal;
     slider.value = maxPriceVal;
-    display.textContent = (maxPriceVal / 1000).toFixed(0) + 'к ₽';
+    display.textContent = (maxPriceVal / 1000).toFixed(0) + 'к у.е.';
     slider.addEventListener('input', () => {
-      display.textContent = (parseInt(slider.value) / 1000).toFixed(0) + 'к ₽';
+      display.textContent = (parseInt(slider.value) / 1000).toFixed(0) + 'к у.е.';
       currentPage = 1;
       applyFilters();
     });
@@ -99,7 +99,16 @@
     renderPagination();
   }
 
-  function formatPrice(p) { return p.toLocaleString('ru-RU') + ' ₽'; }
+  function formatPrice(p) { return p.toLocaleString('ru-RU') + ' у.е.'; }
+  function renderPriceHtml(product) {
+    if (product.promoPrice) {
+      return `<div class="card__price-wrap">
+        <span class="card__price-promo">${formatPrice(product.promoPrice)}</span>
+        <span class="card__price-old">${formatPrice(product.price)}</span>
+      </div>`;
+    }
+    return `<div class="card__price">${formatPrice(product.price)}</div>`;
+  }
 
   function renderGrid() {
     const lang = getLang();
@@ -115,7 +124,8 @@
       <a href="product.html?id=${p.id}" class="card">
         <div class="card__img"><img src="${p.images[0]}" alt="${p.name[lang]}" loading="lazy"></div>
         <div class="card__name">${p.name[lang]}</div>
-        <div class="card__price">${formatPrice(p.price)}</div>
+        ${renderPriceHtml(p)}
+        <div class="card__code">(код ${p.specs.code}, артикул ${p.specs.article})</div>
       </a>
     `).join('');
   }
