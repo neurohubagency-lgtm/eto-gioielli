@@ -3,7 +3,17 @@
     return new URLSearchParams(window.location.search).get('id');
   }
 
-  function formatPrice(p) { return p.toLocaleString('ru-RU') + ' ₽'; }
+  function formatPrice(p) { return p.toLocaleString('ru-RU') + ' у.е.'; }
+  function renderPriceHtml(product) {
+    if (product.promoPrice) {
+      return `<div class="price-wrap">
+        <span class="price-promo">${formatPrice(product.promoPrice)}</span>
+        <span class="price-old">${formatPrice(product.price)}</span>
+        <span class="price-badge">PROMO</span>
+      </div>`;
+    }
+    return `<span class="product-price-val">${formatPrice(product.price)}</span>`;
+  }
 
   function getMetalLabel(id) {
     const m = CONFIG.metals.find(x => x.id === id);
@@ -22,29 +32,41 @@
 
     document.title = product.name[lang] + ' — Eto Gioielli';
 
-    const mainImg = document.getElementById('galleryMain');
-    mainImg.src = product.images[0];
-    mainImg.alt = product.name[lang];
+    const galleryMain = document.getElementById('galleryMain');
+    const mainVideo = document.getElementById('galleryVideo');
+    galleryMain.src = product.images[0];
+    galleryMain.alt = product.name[lang];
 
     const thumbsEl = document.getElementById('galleryThumbs');
-    if (product.images.length > 1) {
-      thumbsEl.innerHTML = product.images.map((src, i) =>
-        `<img src="${src}" class="gallery__thumb${i === 0 ? ' active' : ''}" data-idx="${i}" alt="">`
-      ).join('');
-      thumbsEl.querySelectorAll('.gallery__thumb').forEach(th => {
-        th.addEventListener('click', () => {
-          mainImg.src = th.src;
-          thumbsEl.querySelectorAll('.gallery__thumb').forEach(t => t.classList.remove('active'));
-          th.classList.add('active');
-        });
-      });
-    } else {
-      thumbsEl.innerHTML = '';
+    let thumbsHtml = product.images.map((src, i) =>
+      `<img src="${src}" class="gallery__thumb${i === 0 ? ' active' : ''}" data-type="img" data-src="${src}" alt="">`
+    ).join('');
+    if (product.video) {
+      thumbsHtml += `<div class="gallery__thumb gallery__thumb--video" data-type="video" data-src="${product.video}">▶</div>`;
     }
+    thumbsEl.innerHTML = thumbsHtml;
+    thumbsEl.querySelectorAll('.gallery__thumb').forEach(th => {
+      th.addEventListener('click', () => {
+        thumbsEl.querySelectorAll('.gallery__thumb').forEach(t => t.classList.remove('active'));
+        th.classList.add('active');
+        if (th.dataset.type === 'video') {
+          galleryMain.style.display = 'none';
+          mainVideo.style.display = 'block';
+          mainVideo.src = th.dataset.src;
+          mainVideo.play();
+        } else {
+          mainVideo.style.display = 'none';
+          mainVideo.pause();
+          galleryMain.style.display = 'block';
+          galleryMain.src = th.dataset.src;
+        }
+      });
+    });
 
-    document.getElementById('productArticle').textContent = product.specs.article;
+    const codeText = product.specs.code ? `код ${product.specs.code}, артикул ${product.specs.article}` : `артикул ${product.specs.article}`;
+    document.getElementById('productArticle').textContent = codeText;
     document.getElementById('productName').textContent = product.name[lang];
-    document.getElementById('productPrice').textContent = formatPrice(product.price);
+    document.getElementById('productPrice').innerHTML = renderPriceHtml(product);
     document.getElementById('productDescription').textContent = product.description[lang];
 
     const specs = [
@@ -69,7 +91,7 @@
         <a href="product.html?id=${p.id}" class="card">
           <div class="card__img"><img src="${p.images[0]}" alt="${p.name[lang]}" loading="lazy"></div>
           <div class="card__name">${p.name[lang]}</div>
-          <div class="card__price">${formatPrice(p.price)}</div>
+          ${p.promoPrice ? `<div class="card__price-wrap"><span class="card__price-promo">${formatPrice(p.promoPrice)}</span><span class="card__price-old">${formatPrice(p.price)}</span></div>` : `<div class="card__price">${formatPrice(p.price)}</div>`}
         </a>
       `).join('');
     } else {
