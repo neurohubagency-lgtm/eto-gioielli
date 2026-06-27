@@ -100,12 +100,11 @@ h3 { font-size: 1.4rem; }
 .hero__tagline { font-size: 0.875rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 24px; }
 .hero h1 { margin-bottom: 32px; }
 .hero__buttons { display: flex; gap: 16px; flex-wrap: wrap; }
-.hero__image { display: flex; justify-content: center; align-items: center; background: #0d1b4b; border-radius: var(--radius); }
-.hero__image img {
+.hero__image { display: flex; justify-content: center; align-items: center; }
+.hero__image img, .hero__image video {
   width: 100%; max-width: 480px; height: 540px;
   object-fit: cover; border-radius: var(--radius);
-  box-shadow: 0 24px 64px rgba(30, 58, 138, 0.3);
-  mix-blend-mode: screen;
+  box-shadow: 0 24px 64px rgba(30, 58, 138, 0.15);
 }
 
 /* ── Brand photo ── */
@@ -265,7 +264,7 @@ h3 { font-size: 1.4rem; }
   .footer__inner { flex-direction: column; text-align: center; }
   .hero__split { grid-template-columns: 1fr; }
   .hero__image { order: -1; }
-  .hero__image img { height: 320px; max-width: 100%; }
+  .hero__image img, .hero__image video { height: 320px; max-width: 100%; }
 }
 @media (max-width: 480px) {
   .products-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
