@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Управление каталогом — ÉTO GIOIELLI</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Georgia', serif; background: #f4f3f0; color: #1a1a2e; min-height: 100vh; }
+
+    /* LOGIN */
+    #loginScreen {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      min-height: 100vh; padding: 24px;
+    }
+    .login-card {
+      background: #fff; padding: 48px 40px; border-radius: 12px;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.10); width: 100%; max-width: 380px; text-align: center;
+    }
+    .login-logo { font-size: 0.75rem; letter-spacing: 0.25em; color: #1e3a8a; margin-bottom: 8px; }
+    .login-card h1 { font-size: 1.5rem; font-weight: normal; margin-bottom: 32px; }
+    .login-card input {
+      width: 100%; padding: 14px 16px; border: 1px solid #ddd; border-radius: 8px;
+      font-size: 1rem; margin-bottom: 16px; outline: none;
+    }
+    .login-card input:focus { border-color: #1e3a8a; }
+    .btn-primary {
+      width: 100%; padding: 14px; background: #1e3a8a; color: #fff;
+      border: none; border-radius: 8px; font-size: 1rem; cursor: pointer; letter-spacing: 0.05em;
+    }
+    .btn-primary:hover { background: #1a2f6e; }
+    .error-msg { color: #dc2626; margin-top: 12px; font-size: 0.875rem; }
+
+    /* ADMIN PANEL */
+    #adminPanel { display: none; }
+    .admin-header {
+      background: #1a1a2e; color: #fff; padding: 16px 24px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .admin-header .logo { font-size: 0.75rem; letter-spacing: 0.2em; }
+    .admin-header button {
+      background: transparent; border: 1px solid rgba(255,255,255,0.3);
+      color: #fff; padding: 6px 16px; border-radius: 6px; cursor: pointer; font-size: 0.8rem;
+    }
+
+    .admin-body { max-width: 680px; margin: 0 auto; padding: 32px 16px; }
+
+    .section-title { font-size: 1.25rem; font-weight: normal; margin-bottom: 24px; color: #1e3a8a; }
+
+    .field-group { margin-bottom: 24px; }
+    .field-group label { display: block; font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase; color: #666; margin-bottom: 8px; }
+
+    select, textarea, input[type="text"], input[type="number"] {
+      width: 100%; padding: 12px 16px; border: 1px solid #ddd; border-radius: 8px;
+      font-size: 0.95rem; font-family: inherit; background: #fff; outline: none;
+    }
+    select:focus, textarea:focus, input:focus { border-color: #1e3a8a; }
+    textarea { resize: vertical; min-height: 100px; }
+
+    .upload-area {
+      border: 2px dashed #ddd; border-radius: 8px; padding: 24px;
+      text-align: center; cursor: pointer; transition: all 0.2s; background: #fff;
+      position: relative;
+    }
+    .upload-area:hover, .upload-area.dragover { border-color: #1e3a8a; background: #f0f4ff; }
+    .upload-area input[type="file"] {
+      position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
+    }
+    .upload-icon { font-size: 2rem; margin-bottom: 8px; }
+    .upload-text { font-size: 0.875rem; color: #666; }
+    .upload-text strong { color: #1e3a8a; }
+
+    .preview-wrap { margin-top: 12px; border-radius: 8px; overflow: hidden; background: #000; }
+    .preview-wrap img, .preview-wrap video {
+      width: 100%; max-height: 280px; object-fit: contain; display: block;
+    }
+    .preview-label { font-size: 0.75rem; color: #888; margin-top: 6px; }
+
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+    .save-btn {
+      width: 100%; padding: 16px; background: #1e3a8a; color: #fff;
+      border: none; border-radius: 8px; font-size: 1rem; cursor: pointer;
+      letter-spacing: 0.05em; margin-top: 8px; transition: background 0.2s;
+    }
+    .save-btn:hover { background: #1a2f6e; }
+    .save-btn:disabled { background: #aaa; cursor: not-allowed; }
+
+    .status-msg {
+      margin-top: 16px; padding: 14px 16px; border-radius: 8px;
+      font-size: 0.9rem; display: none;
+    }
+    .status-msg.success { background: #d1fae5; color: #065f46; display: block; }
+    .status-msg.error { background: #fee2e2; color: #991b1b; display: block; }
+    .status-msg.loading { background: #dbeafe; color: #1e3a8a; display: block; }
+
+    .current-badge {
+      display: inline-block; font-size: 0.7rem; background: #e0e7ff; color: #3730a3;
+      padding: 2px 8px; border-radius: 4px; margin-left: 8px; vertical-align: middle;
+    }
+
+    @media (max-width: 480px) {
+      .login-card { padding: 32px 24px; }
+      .two-col { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<div id="loginScreen">
+  <div class="login-card">
+    <p class="login-logo">ÉTO GIOIELLI</p>
+    <h1>Панель управления</h1>
+    <input type="password" id="passwordInput" placeholder="Введите пароль" onkeydown="if(event.key==='Enter')login()">
+    <button class="btn-primary" onclick="login()">Войти</button>
+    <p class="error-msg" id="loginError"></p>
+  </div>
+</div>
+
+<!-- ADMIN PANEL -->
+<div id="adminPanel">
+  <div class="admin-header">
+    <span class="logo">ÉTO GIOIELLI — УПРАВЛЕНИЕ КАТАЛОГОМ</span>
+    <button onclick="logout()">Выйти</button>
+  </div>
+
+  <div class="admin-body">
+    <div class="field-group">
+      <label>Выберите изделие</label>
+      <select id="productSelect" onchange="onProductChange()">
+        <option value="">— выберите изделие из каталога —</option>
+      </select>
+    </div>
+
+    <div id="productForm" style="display:none">
+      <p class="section-title" id="productTitle"></p>
+
+      <div class="two-col">
+        <!-- PHOTO -->
+        <div class="field-group">
+          <label>Фото <span class="current-badge" id="photoBadge" style="display:none">есть</span></label>
+          <div class="upload-area" id="photoArea">
+            <input type="file" id="photoInput" accept="image/*" onchange="previewFile('photo')">
+            <div class="upload-icon">📷</div>
+            <div class="upload-text"><strong>Выбрать фото</strong><br>JPG, PNG до 5 МБ</div>
+          </div>
+          <div id="photoPreview"></div>
+        </div>
+
+        <!-- VIDEO -->
+        <div class="field-group">
+          <label>Видео <span class="current-badge" id="videoBadge" style="display:none">есть</span></label>
+          <div class="upload-area" id="videoArea">
+            <input type="file" id="videoInput" accept="video/*" onchange="previewFile('video')">
+            <div class="upload-icon">🎬</div>
+            <div class="upload-text"><strong>Выбрать видео</strong><br>MP4 до 4 МБ</div>
+          </div>
+          <div id="videoPreview"></div>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label>Описание (RU)</label>
+        <textarea id="descRu" placeholder="Описание на русском языке..."></textarea>
+      </div>
+
+      <div class="field-group">
+        <label>Описание (EN)</label>
+        <textarea id="descEn" placeholder="Description in English..."></textarea>
+      </div>
+
+      <div class="two-col">
+        <div class="field-group">
+          <label>Цена (у.е.)</label>
+          <input type="number" id="priceInput" placeholder="например: 3900">
+        </div>
+        <div class="field-group">
+          <label>Акционная цена (у.е.)</label>
+          <input type="number" id="promoPriceInput" placeholder="необязательно">
+        </div>
+      </div>
+
+      <button class="save-btn" id="saveBtn" onclick="saveProduct()">💾 Сохранить изменения</button>
+      <div class="status-msg" id="statusMsg"></div>
+    </div>
+  </div>
+</div>
+
+<script src="../data/products.js"></script>
+<script>
+  let currentProduct = null;
+  let pwd = '';
+
+  // ── LOGIN ──
+  function login() {
+    const val = document.getElementById('passwordInput').value.trim();
+    if (!val) return;
+    // Verify password by making a test call
+    pwd = val;
+    document.getElementById('loginError').textContent = '';
+    document.getElementById('passwordInput').disabled = true;
+    document.querySelector('.btn-primary').disabled = true;
+    document.querySelector('.btn-primary').textContent = 'Проверка...';
+
+    fetch('/.netlify/functions/update-product', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password: pwd, productId: '_check_' })
+    }).then(r => r.json()).then(data => {
+      if (data.error === 'Неверный пароль') {
+        document.getElementById('loginError').textContent = 'Неверный пароль';
+        pwd = '';
+        document.getElementById('passwordInput').disabled = false;
+        document.querySelector('.btn-primary').disabled = false;
+        document.querySelector('.btn-primary').textContent = 'Войти';
+        document.getElementById('passwordInput').value = '';
+      } else {
+        sessionStorage.setItem('admin_pwd', pwd);
+        showAdmin();
+      }
+    }).catch(() => {
+      document.getElementById('loginError').textContent = 'Ошибка соединения';
+      document.getElementById('passwordInput').disabled = false;
+      document.querySelector('.btn-primary').disabled = false;
+      document.querySelector('.btn-primary').textContent = 'Войти';
+    });
+  }
+
+  function logout() {
+    sessionStorage.removeItem('admin_pwd');
+    pwd = '';
+    document.getElementById('adminPanel').style.display = 'none';
+    document.getElementById('loginScreen').style.display = 'flex';
+    document.getElementById('passwordInput').value = '';
+    document.getElementById('passwordInput').disabled = false;
+    document.querySelector('.btn-primary').disabled = false;
+    document.querySelector('.btn-primary').textContent = 'Войти';
+  }
+
+  function showAdmin() {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('adminPanel').style.display = 'block';
+    buildProductSelect();
+  }
+
+  // ── PRODUCTS ──
+  function buildProductSelect() {
+    const sel = document.getElementById('productSelect');
+    const cats = { earrings:'Серьги', rings:'Кольца', necklaces:'Колье', bracelets:'Браслеты', stones:'Камни', sets:'Комплект', pendants:'Подвески' };
+    window.PRODUCTS.forEach((p, i) => {
+      const opt = document.createElement('option');
+      opt.value = p.id;
+      opt.textContent = `${i+1}. ${p.name.ru}`;
+      sel.appendChild(opt);
+    });
+  }
+
+  function onProductChange() {
+    const id = document.getElementById('productSelect').value;
+    if (!id) { document.getElementById('productForm').style.display = 'none'; return; }
+    currentProduct = window.PRODUCTS.find(p => p.id === id);
+    if (!currentProduct) return;
+
+    document.getElementById('productForm').style.display = 'block';
+    document.getElementById('productTitle').textContent = currentProduct.name.ru;
+    document.getElementById('descRu').value = currentProduct.description?.ru || '';
+    document.getElementById('descEn').value = currentProduct.description?.en || '';
+    document.getElementById('priceInput').value = currentProduct.price || '';
+    document.getElementById('promoPriceInput').value = currentProduct.promoPrice || '';
+
+    const hasPhoto = currentProduct.images && currentProduct.images[0] && !currentProduct.images[0].includes('placeholder');
+    const hasVideo = !!currentProduct.video;
+    document.getElementById('photoBadge').style.display = hasPhoto ? 'inline-block' : 'none';
+    document.getElementById('videoBadge').style.display = hasVideo ? 'inline-block' : 'none';
+
+    // Show current photo
+    if (hasPhoto) {
+      document.getElementById('photoPreview').innerHTML = `
+        <div class="preview-wrap"><img src="../${currentProduct.images[0]}" onerror="this.parentElement.remove()"></div>
+        <p class="preview-label">Текущее фото</p>`;
+    } else {
+      document.getElementById('photoPreview').innerHTML = '';
+    }
+    document.getElementById('videoPreview').innerHTML = '';
+    document.getElementById('photoInput').value = '';
+    document.getElementById('videoInput').value = '';
+    document.getElementById('statusMsg').className = 'status-msg';
+    document.getElementById('statusMsg').textContent = '';
+  }
+
+  function previewFile(type) {
+    const input = document.getElementById(type + 'Input');
+    const previewEl = document.getElementById(type + 'Preview');
+    const file = input.files[0];
+    if (!file) return;
+
+    const url = URL.createObjectURL(file);
+    if (type === 'photo') {
+      previewEl.innerHTML = `<div class="preview-wrap"><img src="${url}"></div><p class="preview-label">Новое фото: ${file.name}</p>`;
+    } else {
+      previewEl.innerHTML = `<div class="preview-wrap"><video src="${url}" controls muted></video></div><p class="preview-label">Новое видео: ${file.name} (${(file.size/1024/1024).toFixed(1)} МБ)</p>`;
+    }
+  }
+
+  // ── SAVE ──
+  async function fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result.split(',')[1]);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  async function saveProduct() {
+    if (!currentProduct) return;
+
+    const photoFile = document.getElementById('photoInput').files[0];
+    const videoFile = document.getElementById('videoInput').files[0];
+
+    if (videoFile && videoFile.size > 4.5 * 1024 * 1024) {
+      showStatus('error', 'Видео слишком большое (максимум 4.5 МБ). Сожмите видео или обратитесь к разработчику.');
+      return;
+    }
+
+    showStatus('loading', 'Сохранение... Пожалуйста, подождите (30-60 секунд)');
+    document.getElementById('saveBtn').disabled = true;
+
+    try {
+      const body = {
+        password: pwd || sessionStorage.getItem('admin_pwd'),
+        productId: currentProduct.id,
+        descriptionRu: document.getElementById('descRu').value,
+        descriptionEn: document.getElementById('descEn').value,
+        price: document.getElementById('priceInput').value,
+        promoPrice: document.getElementById('promoPriceInput').value,
+      };
+
+      if (photoFile) body.photoBase64 = await fileToBase64(photoFile);
+      if (videoFile) body.videoBase64 = await fileToBase64(videoFile);
+
+      const res = await fetch('/.netlify/functions/update-product', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        showStatus('success', '✅ Сохранено! Сайт обновится через 1-2 минуты.');
+      } else {
+        showStatus('error', 'Ошибка: ' + (data.error || 'неизвестная ошибка'));
+      }
+    } catch(e) {
+      showStatus('error', 'Ошибка соединения: ' + e.message);
+    }
+
+    document.getElementById('saveBtn').disabled = false;
+  }
+
+  function showStatus(type, text) {
+    const el = document.getElementById('statusMsg');
+    el.className = 'status-msg ' + type;
+    el.textContent = text;
+  }
+
+  // ── INIT ──
+  window.addEventListener('load', () => {
+    const saved = sessionStorage.getItem('admin_pwd');
+    if (saved) { pwd = saved; showAdmin(); }
+  });
+</script>
+</body>
+</html>
