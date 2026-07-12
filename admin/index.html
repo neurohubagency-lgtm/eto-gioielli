@@ -133,6 +133,120 @@
       </select>
     </div>
 
+    <button class="save-btn" id="toggleCreateBtn" style="background:#fff;color:#1e3a8a;border:1px solid #1e3a8a;margin-bottom:24px" onclick="toggleCreateForm()">➕ Добавить новое изделие</button>
+
+    <div id="createForm" style="display:none">
+      <p class="section-title">Новое изделие</p>
+
+      <div class="field-group">
+        <label>Категория</label>
+        <select id="newCategory">
+          <option value="earrings">Серьги</option>
+          <option value="rings">Кольца</option>
+          <option value="necklaces">Колье</option>
+          <option value="bracelets">Браслеты</option>
+          <option value="stones">Камни</option>
+          <option value="sets">Комплекты</option>
+        </select>
+      </div>
+
+      <div class="two-col">
+        <div class="field-group">
+          <label>Название (RU)</label>
+          <input type="text" id="newNameRu" placeholder="например: Кольцо Round 2.00 ct">
+        </div>
+        <div class="field-group">
+          <label>Название (EN)</label>
+          <input type="text" id="newNameEn" placeholder="e.g. Round Ring 2.00 ct">
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label>Описание (RU)</label>
+        <textarea id="newDescRu" placeholder="Описание на русском языке..."></textarea>
+      </div>
+
+      <div class="field-group">
+        <label>Описание (EN)</label>
+        <textarea id="newDescEn" placeholder="Description in English..."></textarea>
+      </div>
+
+      <div class="two-col">
+        <div class="field-group">
+          <label>Цена (у.е.)</label>
+          <input type="number" id="newPrice" placeholder="например: 3900">
+        </div>
+        <div class="field-group">
+          <label>Акционная цена (у.е.)</label>
+          <input type="number" id="newPromoPrice" placeholder="необязательно">
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="field-group">
+          <label>Металл</label>
+          <select id="newMetal">
+            <option value="wg18">Белое золото 18K</option>
+            <option value="wg14">Белое золото 14K</option>
+            <option value="yg18">Жёлтое золото 18K</option>
+            <option value="rg18">Розовое золото 18K</option>
+            <option value="pt950">Платина 950</option>
+            <option value="—">Без металла (камень)</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label>Карат</label>
+          <input type="number" step="0.01" id="newCarat" placeholder="например: 2.00">
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="field-group">
+          <label>Огранка</label>
+          <input type="text" id="newCut" placeholder="Round, Oval, Pear, Cushion...">
+        </div>
+        <div class="field-group">
+          <label>Цвет</label>
+          <input type="text" id="newColor" placeholder="D, E, Vivid Yellow...">
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="field-group">
+          <label>Чистота</label>
+          <input type="text" id="newClarity" placeholder="VS1, VVS2...">
+        </div>
+        <div class="field-group">
+          <label>Артикул</label>
+          <input type="text" id="newArticle" placeholder="необязательно">
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="field-group">
+          <label>Фото (обязательно)</label>
+          <div class="upload-area" id="newPhotoArea">
+            <input type="file" id="newPhotoInput" accept="image/*" onchange="previewNewFile('photo')">
+            <div class="upload-icon">📷</div>
+            <div class="upload-text"><strong>Выбрать фото</strong><br>JPG, PNG до 5 МБ</div>
+          </div>
+          <div id="newPhotoPreview"></div>
+        </div>
+        <div class="field-group">
+          <label>Видео</label>
+          <div class="upload-area" id="newVideoArea">
+            <input type="file" id="newVideoInput" accept="video/*" onchange="previewNewFile('video')">
+            <div class="upload-icon">🎬</div>
+            <div class="upload-text"><strong>Выбрать видео</strong><br>MP4 до 4 МБ</div>
+          </div>
+          <div id="newVideoPreview"></div>
+        </div>
+      </div>
+
+      <button class="save-btn" id="createBtn" onclick="createProduct()">➕ Создать изделие</button>
+      <div class="status-msg" id="createStatusMsg"></div>
+    </div>
+
     <div id="productForm" style="display:none">
       <p class="section-title" id="productTitle"></p>
 
@@ -363,6 +477,93 @@
     const el = document.getElementById('statusMsg');
     el.className = 'status-msg ' + type;
     el.textContent = text;
+  }
+
+  // ── CREATE NEW PRODUCT ──
+  function toggleCreateForm() {
+    const form = document.getElementById('createForm');
+    const isOpen = form.style.display === 'block';
+    form.style.display = isOpen ? 'none' : 'block';
+    document.getElementById('productForm').style.display = 'none';
+    document.getElementById('productSelect').value = '';
+    document.getElementById('toggleCreateBtn').textContent = isOpen ? '➕ Добавить новое изделие' : '✕ Отменить добавление';
+  }
+
+  function previewNewFile(type) {
+    const input = document.getElementById('new' + (type === 'photo' ? 'Photo' : 'Video') + 'Input');
+    const previewEl = document.getElementById('new' + (type === 'photo' ? 'Photo' : 'Video') + 'Preview');
+    const file = input.files[0];
+    if (!file) return;
+
+    const url = URL.createObjectURL(file);
+    if (type === 'photo') {
+      previewEl.innerHTML = `<div class="preview-wrap"><img src="${url}"></div><p class="preview-label">${file.name}</p>`;
+    } else {
+      previewEl.innerHTML = `<div class="preview-wrap"><video src="${url}" controls muted></video></div><p class="preview-label">${file.name} (${(file.size/1024/1024).toFixed(1)} МБ)</p>`;
+    }
+  }
+
+  function showCreateStatus(type, text) {
+    const el = document.getElementById('createStatusMsg');
+    el.className = 'status-msg ' + type;
+    el.textContent = text;
+  }
+
+  async function createProduct() {
+    const photoFile = document.getElementById('newPhotoInput').files[0];
+    const videoFile = document.getElementById('newVideoInput').files[0];
+    const nameRu = document.getElementById('newNameRu').value.trim();
+    const nameEn = document.getElementById('newNameEn').value.trim();
+    const price = document.getElementById('newPrice').value;
+
+    if (!nameRu || !nameEn) { showCreateStatus('error', 'Заполните название на RU и EN'); return; }
+    if (!price) { showCreateStatus('error', 'Укажите цену'); return; }
+    if (!photoFile) { showCreateStatus('error', 'Фото обязательно'); return; }
+    if (videoFile && videoFile.size > 4.5 * 1024 * 1024) {
+      showCreateStatus('error', 'Видео слишком большое (максимум 4.5 МБ). Сожмите видео.');
+      return;
+    }
+
+    showCreateStatus('loading', 'Создание изделия... Пожалуйста, подождите (30-60 секунд)');
+    document.getElementById('createBtn').disabled = true;
+
+    try {
+      const bodyPayload = {
+        password: pwd || sessionStorage.getItem('admin_pwd'),
+        action: 'create',
+        category: document.getElementById('newCategory').value,
+        nameRu, nameEn,
+        descriptionRu: document.getElementById('newDescRu').value,
+        descriptionEn: document.getElementById('newDescEn').value,
+        price,
+        promoPrice: document.getElementById('newPromoPrice').value,
+        metal: document.getElementById('newMetal').value,
+        carat: document.getElementById('newCarat').value,
+        cut: document.getElementById('newCut').value,
+        color: document.getElementById('newColor').value,
+        clarity: document.getElementById('newClarity').value,
+        article: document.getElementById('newArticle').value,
+        photoBase64: await fileToBase64(photoFile)
+      };
+      if (videoFile) bodyPayload.videoBase64 = await fileToBase64(videoFile);
+
+      const res = await fetch('/.netlify/functions/update-product', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(bodyPayload)
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        showCreateStatus('success', `✅ Изделие ${data.id} создано! Сайт обновится через 1-2 минуты.`);
+      } else {
+        showCreateStatus('error', 'Ошибка: ' + (data.error || 'неизвестная ошибка'));
+      }
+    } catch (e) {
+      showCreateStatus('error', 'Ошибка соединения: ' + e.message);
+    }
+
+    document.getElementById('createBtn').disabled = false;
   }
 
   // ── INIT ──

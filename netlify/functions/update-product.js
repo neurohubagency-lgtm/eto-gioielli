@@ -50,6 +50,62 @@ async function putFile(path, contentBase64, message) {
   }
 }
 
+const CATEGORY_PREFIX = {
+  earrings: 'earr',
+  rings: 'ring',
+  necklaces: 'neck',
+  bracelets: 'brac',
+  stones: 'stone',
+  sets: 'set'
+};
+
+function escapeStr(s) {
+  return String(s || '').replace(/'/g, "\\'");
+}
+
+function nextId(content, prefix) {
+  const re = new RegExp(`id:'${prefix}-(\\d+)'`, 'g');
+  let max = 0, m;
+  while ((m = re.exec(content))) {
+    const n = parseInt(m[1], 10);
+    if (n > max) max = n;
+  }
+  return `${prefix}-${String(max + 1).padStart(3, '0')}`;
+}
+
+function buildProductLiteral(f) {
+  const parts = [
+    `id:'${f.id}'`,
+    `category:'${f.category}'`,
+    `name:{ru:'${escapeStr(f.nameRu)}',en:'${escapeStr(f.nameEn)}'}`,
+    `description:{ru:'${escapeStr(f.descriptionRu)}',en:'${escapeStr(f.descriptionEn)}'}`,
+    `price:${parseInt(f.price, 10)}`
+  ];
+  if (f.promoPrice) parts.push(`promoPrice:${parseInt(f.promoPrice, 10)}`);
+  parts.push(`currency:'UE'`);
+  parts.push(`images:['assets/images/${f.id}.jpg']`);
+  if (f.hasVideo) parts.push(`video:'assets/${f.id}.mp4'`);
+  const specsParts = [
+    `metal:'${escapeStr(f.metal)}'`,
+    `carat:${parseFloat(f.carat) || 0}`,
+    `cut:'${escapeStr(f.cut)}'`,
+    `color:'${escapeStr(f.color)}'`,
+    `clarity:'${escapeStr(f.clarity)}'`,
+    `article:'${escapeStr(f.article || 'CUSTOM')}'`
+  ];
+  parts.push(`specs:{${specsParts.join(',')}}`);
+  parts.push(`featured:false`);
+  return `  { ${parts.join(', ')} }`;
+}
+
+function insertProduct(content, literal) {
+  const closeIdx = content.lastIndexOf('];');
+  if (closeIdx === -1) throw new Error('Не найден конец массива PRODUCTS в products.js');
+  const head = content.slice(0, closeIdx).replace(/\s+$/, '');
+  const tail = content.slice(closeIdx);
+  return `${head},\n${literal}\n${tail}`;
+}
+
 function updateProductInJs(content, productId, updates) {
   const startIdx = content.indexOf(`{ id:'${productId}'`);
   if (startIdx === -1) return null;
@@ -116,6 +172,41 @@ exports.handler = async (event) => {
   }
 
   const { productId, photoBase64, videoBase64, descriptionRu, descriptionEn, price, promoPrice } = body;
+
+  if (body.action === 'create') {
+    const { category, nameRu, nameEn, metal, carat, cut, color, clarity, article } = body;
+    if (!category || !CATEGORY_PREFIX[category]) {
+      return { statusCode: 400, headers, body: JSON.stringify({ error: 'Некорректная категория' }) };
+    }
+    if (!nameRu || !nameEn || !price || !photoBase64) {
+      return { statusCode: 400, headers, body: JSON.stringify({ error: 'Название (RU/EN), цена и фото обязательны' }) };
+    }
+
+    try {
+      const productsRes = await githubRequest('GET', `/repos/${GITHUB_REPO}/contents/data/products.js`);
+      const currentContent = Buffer.from(productsRes.data.content, 'base64').toString('utf-8');
+
+      const id = nextId(currentContent, CATEGORY_PREFIX[category]);
+
+      await putFile(`assets/images/${id}.jpg`, photoBase64, `add photo for new product ${id}`);
+      if (videoBase64) {
+        await putFile(`assets/${id}.mp4`, videoBase64, `add video for new product ${id}`);
+      }
+
+      const literal = buildProductLiteral({
+        id, category, nameRu, nameEn,
+        descriptionRu, descriptionEn, price, promoPrice,
+        metal, carat, cut, color, clarity, article,
+        hasVideo: !!videoBase64
+      });
+      const newContent = insertProduct(currentContent, literal);
+      await putFile('data/products.js', Buffer.from(newContent).toString('base64'), `add new product ${id}`);
+
+      return { statusCode: 200, headers, body: JSON.stringify({ success: true, id }) };
+    } catch (err) {
+      return { statusCode: 500, headers, body: JSON.stringify({ error: err.message }) };
+    }
+  }
 
   if (!productId) {
     return { statusCode: 400, headers, body: JSON.stringify({ error: 'productId обязателен' }) };
