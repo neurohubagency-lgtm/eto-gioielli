@@ -83,5 +83,5 @@ window.PRODUCTS = [
 
   // ── КОМПЛЕКТЫ (1) ──
   { id:'set-001', category:'sets', name:{ru:'Комплект Колье + Серьги Round',en:'Necklace + Earrings Set Round'}, description:{ru:'Комплект LG-Ash64 Колье+серьги белое золото 18 KT 9,500 гр. Бриллианты ROUND, цвет D-E, чистота VVS, 2,03 крт (83 шт).',en:'White gold 18K, 9.50g. Necklace and earrings Round D-E VVS diamonds 2.03ct (83 stones).'}, price:5250, promoPrice:4400, currency:'UE', images:['assets/images/set-001.jpg'], video:'assets/set-001.mp4', specs:{metal:'wg18',carat:2.03,cut:'Brilliant',color:'D-E',clarity:'VVS',article:'FFCR05122/61789/W',code:64}, featured:false },
-  { id:'ring-041', category:'rings', name:{ru:'ТЕСТ Кольцо E2E',en:'TEST Ring E2E'}, description:{ru:'Тестовая запись, будет удалена.',en:'Test entry, will be deleted.'}, price:1000, currency:'UE', images:['assets/images/ring-041.jpg'], specs:{metal:'wg18',carat:1,cut:'Round',color:'D',clarity:'VS1',article:'TEST-E2E'}, featured:false }
+  
 ];
