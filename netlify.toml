@@ -1,5 +1,6 @@
 [build]
   functions = "netlify/functions"
+  # redeploy trigger: pick up new env vars (ADMIN_PASSWORD, GITHUB_TOKEN)
 
 [functions]
   node_bundler = "esbuild"
